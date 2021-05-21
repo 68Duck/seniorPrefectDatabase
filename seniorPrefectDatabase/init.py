@@ -22,10 +22,14 @@ def index():
     cur = get_db().cursor()
     data = query_db("SELECT * FROM test;")
     return render_template("index.html",data=data)
+
+
 def query_db(query, args=(), one=False):
     cur = get_db().execute(query, args)
     rv = cur.fetchall()
     cur.close()
     return (rv[0] if rv else None) if one else rv
+
+
 if __name__ == "__main__":      #runs the application
     app.run()     #debug allows us to not have to refresh every time
