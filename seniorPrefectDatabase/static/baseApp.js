@@ -18,6 +18,7 @@ var previousButtonsLengths = new Array()
 // document.addEventListener("resize",windowSizeChanged)
 // windowSizeChanged()
 // windowScrolled()
+createButtons()
 
 window.onscroll = function() {windowScrolled()};
 var sticky = nav.offsetTop;
@@ -105,55 +106,56 @@ function createButton2(buttonNumber,buttonText,link,openInNewTab){
     newLink.setAttribute("target","_blank")
   }
   newLink.setAttribute("href",link)
+  newLink.setAttribute("padding-left","100px")
   newListItem.appendChild(newLink)
   buttonUnorderedList.appendChild(newListItem)
 }
 
 
-function createButton(buttonNumber,buttonText,link,openInNewTab=false){
-  var newLink = document.createElement("a")
-  var newButton = document.createElement("p")
-  var buttonTextLength = buttonText.length
-  newButton.classList.add("button")
-  // console.log(18+buttonNumber*(lastButtonLength+buttonTextLength/15))
-  // console.log(lastButtonLength)
-  var marginIncrease = 0;
-  for (var i=0;i<previousButtonsLengths.length;i++){
-    marginIncrease = marginIncrease + previousButtonsLengths[i]*1.1
-  }
-  newButton.style.setProperty("--margin-left",(80+marginIncrease*7 + buttonNumber*25+"px"))
-  newButton.setAttribute("id","navButton")
-  newButton.innerHTML = buttonText;
-  newLink.setAttribute("href",link)
-  newLink.classList.add("link")
-  if (openInNewTab==true){
-    newLink.setAttribute("target","_blank")
-  }
-  newLink.appendChild(newButton)
-  nav.appendChild(newLink);
-  buttonsArray[buttonNumber] = newButton
-  // lastButtonLength = buttonText.length
-  previousButtonsLengths[buttonNumber] = buttonText.length
-}
+// function createButton(buttonNumber,buttonText,link,openInNewTab=false){
+//   var newLink = document.createElement("a")
+//   var newButton = document.createElement("p")
+//   var buttonTextLength = buttonText.length
+//   newButton.classList.add("button")
+//   // console.log(18+buttonNumber*(lastButtonLength+buttonTextLength/15))
+//   // console.log(lastButtonLength)
+//   var marginIncrease = 0;
+//   for (var i=0;i<previousButtonsLengths.length;i++){
+//     marginIncrease = marginIncrease + previousButtonsLengths[i]*1.1
+//   }
+//   newButton.style.setProperty("--margin-left",(80+marginIncrease*7 + buttonNumber*25+"px"))
+//   newButton.setAttribute("id","navButton")
+//   newButton.innerHTML = buttonText;
+//   newLink.setAttribute("href",link)
+//   newLink.classList.add("link")
+//   if (openInNewTab==true){
+//     newLink.setAttribute("target","_blank")
+//   }
+//   newLink.appendChild(newButton)
+//   nav.appendChild(newLink);
+//   buttonsArray[buttonNumber] = newButton
+//   // lastButtonLength = buttonText.length
+//   previousButtonsLengths[buttonNumber] = buttonText.length
+// }
 
-function createHamburgerButton(buttonNumber,buttonText,link,openInNewTab=false){
-  var newLink = document.createElement("a")
-  var newButton = document.createElement("p")
-  var buttonTextLength = buttonText.length
-  newButton.classList.add("button")
-  // console.log(18+buttonNumber*(lastButtonLength+buttonTextLength/15))
-  // console.log(lastButtonLength)
-
-  newButton.classList.add("hamburgerMenuDisplayItem")
-  newButton.style.setProperty("--animationDelay",(buttonNumber)*0.2+"s")
-  // newButton.setAttribute("id","navButton")
-  newButton.innerHTML = buttonText;
-  newLink.setAttribute("href",link)
-  newLink.classList.add("link")
-  if (openInNewTab==true){
-    newLink.setAttribute("target","_blank")
-  }
-  newLink.appendChild(newButton)
-  hamburgerMenuDisplay.appendChild(newLink);
-  buttonsArray[buttonNumber] = newButton
-}
+// function createHamburgerButton(buttonNumber,buttonText,link,openInNewTab=false){
+//   var newLink = document.createElement("a")
+//   var newButton = document.createElement("p")
+//   var buttonTextLength = buttonText.length
+//   newButton.classList.add("button")
+//   // console.log(18+buttonNumber*(lastButtonLength+buttonTextLength/15))
+//   // console.log(lastButtonLength)
+//
+//   newButton.classList.add("hamburgerMenuDisplayItem")
+//   newButton.style.setProperty("--animationDelay",(buttonNumber)*0.2+"s")
+//   // newButton.setAttribute("id","navButton")
+//   newButton.innerHTML = buttonText;
+//   newLink.setAttribute("href",link)
+//   newLink.classList.add("link")
+//   if (openInNewTab==true){
+//     newLink.setAttribute("target","_blank")
+//   }
+//   newLink.appendChild(newButton)
+//   hamburgerMenuDisplay.appendChild(newLink);
+//   buttonsArray[buttonNumber] = newButton
+// }

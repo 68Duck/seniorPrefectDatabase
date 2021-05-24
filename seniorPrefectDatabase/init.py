@@ -1,5 +1,5 @@
 import sqlite3
-from flask import g,Flask,render_template
+from flask import g,Flask,render_template,request
 from os import path
 DATABASE = 'flaskTest.db'
 fileDir = path.dirname(__file__) # for loading images
@@ -17,11 +17,55 @@ def close_connection(exception):
     if db is not None:
         db.close()
 
-@app.route('/')
+def getIndexPage(tableName):
+    columnNames = query_db(f"SELECT t.name FROM pragma_table_info('{tableName}') t")
+    data = query_db(f"SELECT * FROM {tableName};")
+    if len(data)>0:
+        columns = len(data[0])
+    else:
+        columns = 0
+    return render_template("index.html",data=data,columns=columns,columnNames=columnNames)
+
+def updateTable(tableName,records):
+    sql1 = f'DELETE FROM {tableName}'
+    query_db(sql1)
+
+    for record in records:
+        columns = "?"
+        for i in range(len(record)-1):
+            columns = columns + ",?"
+        sql2 = f'INSERT INTO {tableName} VALUES({columns})'
+        query_db(sql2,record)
+    get_db().commit()
+
+
+@app.route("/tableUpdate",methods=["POST"])
+def tableUpdate():
+    data = request.get_json()
+    if data is None:
+        pass
+    else:
+        updateTable("test2",data)
+    return ("nothing")
+
+@app.route("/test")
+def test():
+    print("testfunction")
+
+@app.route('/',methods=["GET","POST"])
 def index():
-    cur = get_db().cursor()
-    data = query_db("SELECT * FROM test;")
-    return render_template("index.html",data=data)
+    tableName = "test2"
+    # if request.method == "POST":
+    #     request_data = request.get_json()
+    #     # # print(request_data,"tests")
+    #     # if request_data is None:
+    #     #     pass
+    #     # else:
+    #     #     updateTable(tableName,request_data)
+    #
+    #     return getIndexPage(tableName)
+    # else:
+    return getIndexPage(tableName)
 
 
 def query_db(query, args=(), one=False):
