@@ -55,16 +55,6 @@ def test():
 @app.route('/',methods=["GET","POST"])
 def index():
     tableName = "test2"
-    # if request.method == "POST":
-    #     request_data = request.get_json()
-    #     # # print(request_data,"tests")
-    #     # if request_data is None:
-    #     #     pass
-    #     # else:
-    #     #     updateTable(tableName,request_data)
-    #
-    #     return getIndexPage(tableName)
-    # else:
     return getIndexPage(tableName)
 
 

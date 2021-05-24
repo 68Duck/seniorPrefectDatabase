@@ -128,34 +128,8 @@ function addTableRow(){
     newRow.appendChild(newElement)
   }
   tbody.appendChild(newRow)
-  console.log(getTableInformation())
+  sendPost()
 }
-//
-// fetch('/backgroundTest', {
-//
-//   // Declare what type of data we're sending
-//   headers: {
-//     'Content-Type': 'application/json'
-//   },
-//
-//   // Specify the method
-//   method: 'POST',
-//
-//   // A JSON payload
-//   body: JSON.stringify(getTableInformation())
-// })
-
-
-// $.ajax({
-// 	type : "POST",
-// 	url : '/backgroundTest',
-// 	dataType: "json",
-// 	data: JSON.stringify(getTableInformation()),
-// 	contentType: 'application/json;charset=UTF-8',
-// 	success: function (data) {
-// 		console.log(data);
-// 		}
-// 	});
 
 const sendPost = async () => {
    const url = '/tableUpdate'; // the URL to send the HTTP request to
@@ -167,23 +141,9 @@ const sendPost = async () => {
    // console.log(data);
 }
 
-// $(function() {
-//   $('a#test').on('click', function(e) {
-//     e.preventDefault()
-//     $.getJSON('/backgroundTest',
-//         function(data) {
-//       getTableInformation()
-//     });
-//     return false;
-//   });
-// });
-//
-// $(function() { $("#mybutton").click(function (event) { $.getJSON('/backgroundTest', { },
-//     function(data) { }); return false; }); });
 
 
 function getTableInformation (){
-  localStorage.clear()
   var table = document.getElementById("table")
   var tableHTML = table.outerHTML
   var rows = new Array()
@@ -203,6 +163,13 @@ function getTableInformation (){
 }
 
 
+$(document).on('input','#table > tbody > tr > td',function(){
+  sendPost()
+})
+
+function logTest(){
+  console.log("test")
+}
 
 
 
