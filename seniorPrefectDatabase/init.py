@@ -3,7 +3,7 @@ from flask import g,Flask,render_template,request
 from os import path
 DATABASE = 'flaskTest.db'
 fileDir = path.dirname(__file__) # for loading images
-currentTableName = "test2"
+currentTableName = None
 
 app = Flask(__name__)   #creates the application flask
 def get_db():
@@ -53,6 +53,11 @@ def tableUpdate():
         pass
     else:
         updateTable("Current",data)
+        global currentTableName
+        if currentTableName is None:
+            print("Data is not being saved")
+        else:
+            updateTable(currentTableName,data)
     return ("nothing")
 
 def searchSQLTable(tableName,columnName,searchValue):
@@ -136,11 +141,13 @@ def createCurrentTableFromData(data):
 
 @app.route('/openTable',methods=["POST"])
 def openTable():
-    data = request.get_json()
-    if data is None:
+    tableName = request.get_json()
+    if tableName is None:
         return ("nothing")
     else:
-        createCurrentTable(data)
+        global currentTableName
+        currentTableName = tableName
+        createCurrentTable(tableName)
     return("nothing")
 
 # global currentTableName
@@ -160,6 +167,8 @@ def openExcelFile():
         return ("nothing")
     else:
         createCurrentTableFromData(data)
+        global currentTableName
+        currentTableName = None
         # print(data)
     # index()
     return ("nothing")
