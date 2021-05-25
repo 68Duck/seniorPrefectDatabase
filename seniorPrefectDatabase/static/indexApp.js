@@ -141,7 +141,26 @@ const sendPost = async () => {
    // console.log(data);
 }
 
+const searchTable = async () => {
+   const url = '/searchTable'; // the URL to send the HTTP request to
+   const body = JSON.stringify(getTableSearch()); // whatever you want to send in the body of the HTTP request
+   const headers = {'Content-Type': 'application/json'}; // if you're sending JSON to the server
+   const method = 'POST';
+   const response = await fetch(url, { method, body, headers });
+   const data = await response.text(); // or response.json() if your server returns JSON
+   // console.log(data);
+}
 
+function getTableSearch() {
+  var searchColumnName = document.getElementById("searchColumnName")
+  var searchInput = document.getElementById("searchInput")
+  columnName = searchColumnName.value
+  searchValue = searchInput.value
+  var jsonObject = {"columnName":columnName,"searchValue":searchValue};
+  return jsonObject
+}
+
+getTableSearch()
 
 function getTableInformation (){
   var table = document.getElementById("table")
@@ -171,6 +190,88 @@ function logTest(){
   console.log("test")
 }
 
+// var fileInput = document.getElementById("fileInput")
+// fileInput.addEventListener("change",fileInputed)
+const reader = new FileReader()
 
+function fileInputed(e) {
+  if (e!=false){
+    fileTarget = e.target
+    var fileList = fileTarget.files;
+    reader.addEventListener("load",(e) => {
+      console.log(e.target.result)
+      var lines = e.target.result.split(newLine)
+      lines.forEach((line) => {
+        console.log(line)
+      })
+    })
+  }else{
+    alert("The file was not valid. Please try again")
+  }
+  reader.readAsText(fileList[0])
+}
+
+
+
+function Upload() {
+    //Reference the FileUpload element.
+    var fileUpload = document.getElementById("fileInput");
+
+    //Validate whether File is valid Excel file.
+    var regex = /^([a-zA-Z0-9\s_\\.\-:])+(.xls|.xlsx)$/;
+    if (regex.test(fileUpload.value.toLowerCase())) {
+        if (typeof (FileReader) != "undefined") {
+            var reader = new FileReader();
+
+            //For Browsers other than IE.
+            if (reader.readAsBinaryString) {
+                reader.onload = function (e) {
+                    ProcessExcel(e.target.result);
+                };
+                reader.readAsBinaryString(fileUpload.files[0]);
+            } else {
+                //For IE Browser.
+                reader.onload = function (e) {
+                    var data = "";
+                    var bytes = new Uint8Array(e.target.result);
+                    for (var i = 0; i < bytes.byteLength; i++) {
+                        data += String.fromCharCode(bytes[i]);
+                    }
+                    ProcessExcel(data);
+                };
+                reader.readAsArrayBuffer(fileUpload.files[0]);
+            }
+        } else {
+            alert("This browser does not support HTML5.");
+        }
+    } else {
+        alert("Please upload a valid Excel file.");
+    }
+};
+async function ProcessExcel(data) {
+    //Read the Excel File data.
+    var workbook = XLSX.read(data, {
+        type: 'binary'
+    });
+
+    //Fetch the name of First Sheet.
+    var firstSheet = workbook.SheetNames[0];
+
+    //Read all rows from First Sheet into an JSON array.
+    var excelRows = XLSX.utils.sheet_to_row_object_array(workbook.Sheets[firstSheet]);
+    openExcelFile(excelRows)
+    // window.location.reload()
+}
+
+const openExcelFile = async (excelRows) => {
+   const url = '/openExcelFile'; // the URL to send the HTTP request to
+   const body = JSON.stringify(excelRows); // whatever you want to send in the body of the HTTP request
+   const headers = {'Content-Type': 'application/json'}; // if you're sending JSON to the server
+   const method = 'POST';
+   const response = await fetch(url, { method, body, headers });
+   const data = await response.text(); // or response.json() if your server returns JSON
+   // console.log(data);
+   window.location.reload()
+}
 
 // addTableRow()

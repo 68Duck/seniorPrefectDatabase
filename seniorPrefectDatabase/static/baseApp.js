@@ -20,7 +20,7 @@ var previousButtonsLengths = new Array()
 // windowScrolled()
 createButtons()
 
-window.onscroll = function() {windowScrolled()};
+// window.onscroll = function() {windowScrolled()};
 var sticky = nav.offsetTop;
 
 function windowScrolled(){

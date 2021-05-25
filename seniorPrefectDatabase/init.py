@@ -3,6 +3,7 @@ from flask import g,Flask,render_template,request
 from os import path
 DATABASE = 'flaskTest.db'
 fileDir = path.dirname(__file__) # for loading images
+currentTableName = "test2"
 
 app = Flask(__name__)   #creates the application flask
 def get_db():
@@ -17,9 +18,13 @@ def close_connection(exception):
     if db is not None:
         db.close()
 
-def getIndexPage(tableName):
+def getIndexPage(tableName,tableData = None):
     columnNames = query_db(f"SELECT t.name FROM pragma_table_info('{tableName}') t")
-    data = query_db(f"SELECT * FROM {tableName};")
+    # print(columnNames)
+    if tableData is None:
+        data = query_db(f"SELECT * FROM {tableName};")
+    else:
+        data = tableData
     if len(data)>0:
         columns = len(data[0])
     else:
@@ -31,6 +36,7 @@ def updateTable(tableName,records):
     query_db(sql1)
 
     for record in records:
+        # print(record)
         columns = "?"
         for i in range(len(record)-1):
             columns = columns + ",?"
@@ -45,17 +51,95 @@ def tableUpdate():
     if data is None:
         pass
     else:
-        updateTable("test2",data)
+        updateTable("Current",data)
     return ("nothing")
+
+def searchSQLTable(tableName,columnName,searchValue):
+    sql1 =f"SELECT * FROM {tableName} WHERE {columnName} = '{searchValue}'"
+    data = query_db(sql1)
+    return data
+
+@app.route("/searchTable",methods=["POST"])
+def searchTable():
+    tableName = "test2"
+    data = request.get_json()
+    if data is None:
+        return ("nothing")
+    else:
+        # print(data)
+        # print(data["columnName"])
+        tableData = searchSQLTable(tableName,data["columnName"],data["searchValue"])
+        # print(tableData)
+        # return getIndexPage(tableName,tableData=tableData)
+        return ("nothing")
 
 @app.route("/test")
 def test():
     print("testfunction")
 
+def createCurrentTable(tableName):
+    columnNames = query_db(f"SELECT t.name FROM pragma_table_info('{tableName}') t")
+    columnInformation = ""
+    for column in columnNames:
+        columnInformation = columnInformation + f"{column[0]} TEXT NOT NULL,"
+    columnInformation = columnInformation[0:len(columnInformation)-1]
+    # print(columnInformation)
+    data = query_db(f"SELECT * FROM {tableName};")
+    query_db("DROP TABLE IF EXISTS Current")
+    query_db(f"CREATE TABLE 'Current' ({columnInformation})")
+    for record in data:
+        columns = "?"
+        for i in range(len(record)-1):
+            columns = columns + ",?"
+        sql2 = f'INSERT INTO "Current" VALUES({columns})'
+        query_db(sql2,record)
+    get_db().commit()
+
+def createCurrentTableFromData(data): #fix me
+    # print(data)
+    columnNames = list(data[0].keys())
+    # print(columnNames)
+    columnInformation = ""
+    for column in columnNames:
+        columnInformation = columnInformation + f"{column} TEXT NOT NULL,"
+    columnInformation = columnInformation[0:len(columnInformation)-1]
+    # print(columnInformation)
+    query_db("DROP TABLE IF EXISTS Current")
+    query_db(f"CREATE TABLE 'Current' ({columnInformation})")
+    for record in data:
+        record = list(record.values())
+        # print(record)
+        columns = "?"
+        for i in range(len(record)-1):
+            columns = columns + ",?"
+        sql2 = f'INSERT INTO "Current" VALUES({columns})'
+        # print(sql2)
+        query_db(sql2,record)
+    get_db().commit()
+
+
+
+
+# global currentTableName
 @app.route('/',methods=["GET","POST"])
 def index():
-    tableName = "test2"
-    return getIndexPage(tableName)
+    # createCurrentTable(currentTableName)
+    if not checkIfTableExisits("Current"):
+        global currentTableName
+        createCurrentTable(currentTableName)
+    return getIndexPage("Current")
+
+
+@app.route('/openExcelFile',methods=["POST"])
+def openExcelFile():
+    data = request.get_json()
+    if data is None:
+        return ("nothing")
+    else:
+        createCurrentTableFromData(data)
+        # print(data)
+    # index()
+    return ("nothing")
 
 
 def query_db(query, args=(), one=False):
@@ -64,6 +148,13 @@ def query_db(query, args=(), one=False):
     cur.close()
     return (rv[0] if rv else None) if one else rv
 
+def checkIfTableExisits(tableName):  #returns true or false if exisits or not
+
+    results = query_db(f'SELECT name FROM sqlite_master WHERE type="table" AND name="{tableName}";')
+    if len(results)==1:
+        return True
+    else:
+        return False
 
 if __name__ == "__main__":      #runs the application
     app.run()     #debug allows us to not have to refresh every time
