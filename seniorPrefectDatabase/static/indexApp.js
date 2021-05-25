@@ -149,6 +149,7 @@ const searchTable = async () => {
    const response = await fetch(url, { method, body, headers });
    const data = await response.text(); // or response.json() if your server returns JSON
    // console.log(data);
+   window.location.reload()
 }
 
 function getTableSearch() {
@@ -272,6 +273,23 @@ const openExcelFile = async (excelRows) => {
    const data = await response.text(); // or response.json() if your server returns JSON
    // console.log(data);
    window.location.reload()
+}
+
+const openDatabaseTable = async (tableName) => {
+  const url = '/openTable'; // the URL to send the HTTP request to
+  const body = JSON.stringify(tableName); // whatever you want to send in the body of the HTTP request
+  const headers = {'Content-Type': 'application/json'}; // if you're sending JSON to the server
+  const method = 'POST';
+  const response = await fetch(url, { method, body, headers });
+  const data = await response.text(); // or response.json() if your server returns JSON
+  // console.log(data);
+  window.location.reload()
+}
+
+function openTableFromDatabase() {
+  var openTableName = document.getElementById("openTableName")
+  var tableName = openTableName.value
+  openDatabaseTable(tableName);
 }
 
 // addTableRow()

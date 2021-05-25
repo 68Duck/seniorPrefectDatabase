@@ -56,12 +56,26 @@ Home
     </p>
 
   </div>
-
-<input type="file" id = "fileInput" name="inputFile">
-<a href="#">
-
-  <input type="submit" class="btn" value="Open File" onclick="Upload()">
-</a>
+<br/>
+<br/>
+<div id="openTableDiv" class="openTable">
+<span>
+  <input type="file" id = "fileInput" name="inputFile">
+  <a href="#">
+    <input type="submit" class="btn" value="Open Excel File" onclick="Upload()">
+  </a>
+</span>
+  <br/>
+  <select id="openTableName">
+    {% for tableName in tables %}
+    <option value="{{tableName[0]}}">{{tableName[0]}}</option>
+    {% endfor %}
+  </select>
+  <br/>
+  <a href="#">
+    <input type="submit" class="btn" value="Open Table" onclick="openTableFromDatabase()">
+  </a>
+</div>
   <!-- <p><input type="text" name="test2"/></p> -->
   <!-- <form action="/backgroundTest" method = "post">
     <button name="testButton" type = "submit">Test2</button>

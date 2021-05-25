@@ -29,7 +29,8 @@ def getIndexPage(tableName,tableData = None):
         columns = len(data[0])
     else:
         columns = 0
-    return render_template("index.html",data=data,columns=columns,columnNames=columnNames)
+    tables = query_db("SELECT name FROM sqlite_master WHERE type='table' AND NOT (name = 'sqlite_sequence' OR name='Current');")
+    return render_template("index.html",data=data,columns=columns,columnNames=columnNames,tables=tables)
 
 def updateTable(tableName,records):
     sql1 = f'DELETE FROM {tableName}'
@@ -61,7 +62,7 @@ def searchSQLTable(tableName,columnName,searchValue):
 
 @app.route("/searchTable",methods=["POST"])
 def searchTable():
-    tableName = "test2"
+    tableName = "Current"
     data = request.get_json()
     if data is None:
         return ("nothing")
@@ -70,12 +71,27 @@ def searchTable():
         # print(data["columnName"])
         tableData = searchSQLTable(tableName,data["columnName"],data["searchValue"])
         # print(tableData)
+        createCurrentTableFromSearch(tableData)
+        # print(tableData)
         # return getIndexPage(tableName,tableData=tableData)
         return ("nothing")
 
 @app.route("/test")
 def test():
     print("testfunction")
+
+def createCurrentTableFromSearch(tableData):
+    sql1 = 'DELETE FROM Current;'
+    query_db(sql1)
+    for record in tableData:
+        columns = "?"
+        for i in range(len(record)-1):
+            columns = columns + ",?"
+        sql2 = f'INSERT INTO "Current" VALUES({columns})'
+        query_db(sql2,record)
+    get_db().commit()
+    if len(query_db("SELECT * FROM Current")) == 0:
+        print("There are no rows that fit that criteria")
 
 def createCurrentTable(tableName):
     columnNames = query_db(f"SELECT t.name FROM pragma_table_info('{tableName}') t")
@@ -95,7 +111,7 @@ def createCurrentTable(tableName):
         query_db(sql2,record)
     get_db().commit()
 
-def createCurrentTableFromData(data): #fix me
+def createCurrentTableFromData(data):
     # print(data)
     columnNames = list(data[0].keys())
     # print(columnNames)
@@ -118,7 +134,14 @@ def createCurrentTableFromData(data): #fix me
     get_db().commit()
 
 
-
+@app.route('/openTable',methods=["POST"])
+def openTable():
+    data = request.get_json()
+    if data is None:
+        return ("nothing")
+    else:
+        createCurrentTable(data)
+    return("nothing")
 
 # global currentTableName
 @app.route('/',methods=["GET","POST"])
