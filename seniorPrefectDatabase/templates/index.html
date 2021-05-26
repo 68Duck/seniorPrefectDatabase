@@ -9,6 +9,22 @@ Home
 {% endblock %}
 <!DOCTYPE html>
 {% block content %}
+{% if alerts %}
+<div class="alertDiv">
+  {% for alert in alerts %}
+  <p class="alert">{{alert}}</p>
+  {% endfor %}
+</div>
+<br/>
+{% endif %}
+{% if messages %}
+<div class="messagesDiv">
+  {% for message in messages %}
+  <p class="message">{{message}}</p>
+  {% endfor %}
+</div>
+<br/>
+{% endif %}
 <!-- <form action="#" method = "post"> -->
   <div class="tableBackground">
     <button type="button" id="export" class="btn" onclick="tableToExcel('table')">Export List</button>
@@ -36,14 +52,18 @@ Home
       {% endfor %}
     </table>
     <br/>
-    <p><input type="submit" class = "btn" value="Add row" onclick="addTableRow()"/><br/><br/><input type="submit" class="btn" value="Save Table" style="left : 50px;"></p>
+    <p><input type="submit" class = "btn" value="Add row" onclick="addTableRow()"/>
+      <br/><br/>
+      <input type="submit" class="btn" value="Save Table" onclick="saveTable()" style="left : 50px;">
+      <input type="text" id="saveTableName" placeholder="Table Name">
+    </p>
   </div>
   <br/>
   <br/>
   <div class="tableSearch">
     <p>Search table</p>
     <br/>
-    <input id="searchInput">
+    <input id="searchInput" placeholder="Search Value">
     <br/>
     <select id="searchColumnName">
       {% for columnName in columnNames %}

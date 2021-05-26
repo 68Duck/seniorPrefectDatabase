@@ -17,6 +17,26 @@ tr:nth-child(even) {
   background-color: #dddddd;
 }
 
+.alert{
+  color: red;
+
+}
+
+.alertDiv{
+  background-color: white;
+  color: red;
+  width: 80vw;
+  border-radius: 5px;
+  left: 9.3vw;
+  padding: 10px;
+  box-shadow: 0 0 10px 2px;
+  transition: all 0.5s ease;
+  position: relative;
+  display: grid;
+  align-items: center;
+  justify-content: center;
+}
+
 .tableBackground{
   background-color: white;
   color: black;
@@ -28,8 +48,26 @@ tr:nth-child(even) {
   transition: all 0.5s ease;
   position: relative;
   display: grid;
+}
+.messagesDiv{
+  background-color: white;
+  color: black;
+  width: 80vw;
+  border-radius: 5px;
+  left: 9.3vw;
+  padding: 10px;
+  box-shadow: 0 0 10px 2px;
+  transition: all 0.5s ease;
+  position: relative;
+  display: grid;
+  align-items: center;
+  justify-content: center;
 
 }
+.message{
+  color: black;
+}
+
 .tableSearch{
   background-color: white;
   color: black;

@@ -292,4 +292,28 @@ function openTableFromDatabase() {
   openDatabaseTable(tableName);
 }
 
+function test() {
+  alert("test")
+}
+
 // addTableRow()
+
+const saveTableRequest = async (tableName) => {
+  const url = '/saveTable'; // the URL to send the HTTP request to
+  const body = JSON.stringify(tableName); // whatever you want to send in the body of the HTTP request
+  const headers = {'Content-Type': 'application/json'}; // if you're sending JSON to the server
+  const method = 'POST';
+  const response = await fetch(url, { method, body, headers });
+  const data = await response.text(); // or response.json() if your server returns JSON
+  // console.log(data);
+  window.location.reload()
+}
+
+function saveTable() {
+  var tableNameInput = document.getElementById("saveTableName")
+  var tableName = tableNameInput.value
+  saveTableRequest(tableName)
+  window.onbeforeunload = function () {
+        window.scrollTo(0, 0);
+  }
+}
