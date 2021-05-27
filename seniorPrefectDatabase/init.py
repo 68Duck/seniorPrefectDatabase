@@ -38,7 +38,7 @@ def getIndexPage(tableName,tableData = None):
     else:
         columns = 0
     tables = query_db("SELECT name FROM sqlite_master WHERE type='table' AND NOT (name = 'sqlite_sequence' OR name='Current');")
-    return render_template("index.html",data=data,columns=columns,columnNames=columnNames,tables=tables,alerts=alerts,messages=messages)
+    return render_template("indexSPT.html",data=data,columns=columns,columnNames=columnNames,tables=tables,alerts=alerts,messages=messages)
 
 def updateTable(tableName,records):
     clearAlertsAndMessages()
